@@ -6,7 +6,6 @@ class AppLogger:
     def __init__(self, name: str, config: dict = None):
         if config is None:
             config = logger_config
-
         logging.config.dictConfig(config)
         self.__origin = logging.getLogger(name)
 

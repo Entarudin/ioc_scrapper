@@ -4,7 +4,7 @@ from src import container
 
 
 async def main():
-    virus_total_base_url = container.scrapper_config.get_scrapper_virus_total_base_url()
+    virus_total_base_url = container.scrapper_config.scrapper_virus_total_base_url
     scrapper_factory = container.get_scrappers_factory
 
     virus_total_scraper = scrapper_factory.create(virus_total_base_url)

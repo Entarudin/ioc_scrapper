@@ -23,14 +23,14 @@ class Container:
     def get_virus_total_scrapper(self) -> VirusTotalScrapper:
         return VirusTotalScrapper(
             adapter=self.http_adapter,
-            base_url=self.scrapper_config.get_scrapper_virus_total_base_url(),
+            base_url=self.scrapper_config.scrapper_virus_total_base_url,
         )
 
     @cached_property
     def get_scrappers_factory(self) -> ScrapperFactory:
         return ScrapperFactory(
             {
-                self.scrapper_config.get_scrapper_virus_total_base_url(): self.get_virus_total_scrapper
+                self.scrapper_config.scrapper_virus_total_base_url: self.get_virus_total_scrapper
             }
         )
 
