@@ -1,0 +1,1 @@
+from .virustotal_scrapper import VirusTotalScrapper
