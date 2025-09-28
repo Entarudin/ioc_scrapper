@@ -1,16 +1,11 @@
-import asyncio
+import uvicorn
+from fastapi import FastAPI
 
-from src import container
+from app.src.ui.rest.http.v1 import router as scrapping_request_routes
 
 
-async def main():
-    virus_total_base_url = container.scrapper_config.scrapper_virus_total_base_url
-    scrapper_factory = container.get_scrappers_factory
-
-    virus_total_scraper = scrapper_factory.create(virus_total_base_url)
-    virus_total_info = await virus_total_scraper.scrape("8.8.8.8")
-    print(virus_total_info)
-
+app = FastAPI()
+app.include_router(scrapping_request_routes)
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    uvicorn.run(app, host="0.0.0.0", port=8000)
