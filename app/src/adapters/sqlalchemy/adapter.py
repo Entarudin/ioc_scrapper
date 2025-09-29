@@ -7,7 +7,7 @@ class Adapter:
         self._config = config
 
     def get_engine(self):
-        return create_async_engine(self._config.get_database_url)
+        return create_async_engine(url=self._config.get_database_url, echo=True)
 
     @property
     def get_session(self):

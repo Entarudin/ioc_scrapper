@@ -1,11 +1,11 @@
-import uvicorn
-from fastapi import FastAPI
-
-from app.src.ui.rest.http.v1 import router as scrapping_request_routes
+from app.src.app import Application
+from app.src.container import container
 
 
-app = FastAPI()
-app.include_router(scrapping_request_routes)
+def main() -> None:
+    app = Application(config=container.app_config, logger=container.app_logger)
+    app.start()
+
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    main()

@@ -1,1 +1,2 @@
 from .create_scrapping_request import CreateScrappingRequestDto
+from .update_scrapping_request import UpdateScrappingRequestDto

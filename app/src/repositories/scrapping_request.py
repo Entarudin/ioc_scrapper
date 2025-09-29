@@ -1,9 +1,7 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 
-from app.src.dtos import CreateScrappingRequestDto
+from app.src.repositories.base_repository import BaseRepository
 
 
-class ScrappingRequestRepository(ABC):
-    @abstractmethod
-    async def create(self, dto: CreateScrappingRequestDto):
-        pass
+class ScrappingRequestRepository(BaseRepository, ABC):
+    pass
