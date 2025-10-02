@@ -7,7 +7,7 @@ from .config import ScrapperConfig, DatabaseConfig, AppConfig
 from .repositories.pg import PgScrappingRequestRepository
 from .repositories.scrapping_request import ScrappingRequestRepository
 from .scrappers import VirusTotalScrapper, ScrapperFactory
-from .services import ScrappingRequestService
+from .services import ScrappingRequestService, ScrapperService
 
 
 class Container:
@@ -56,6 +56,16 @@ class Container:
             {
                 self.scrapper_config.scrapper_virus_total_base_url: self.virus_total_scrapper
             }
+        )
+
+    @cached_property
+    def scrapper_service(self) -> ScrapperService:
+        return ScrapperService(
+            logger=self.app_logger,
+            scrapper_config=self.scrapper_config,
+            scrapper_factory=self.scrappers_factory,
+            scrapping_request_service=self.scrapping_request_service,
+            scrapping_request_repository=self.scrapping_request_repository,
         )
 
 

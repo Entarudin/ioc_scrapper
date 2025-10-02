@@ -1,1 +1,2 @@
 from .scrapping_request_service import ScrappingRequestService
+from .scrapper import ScrapperService

@@ -9,7 +9,7 @@ class DatabaseConfig(BaseConfig):
     POSTGRES_DATABASE = "POSTGRES_DATABASE"
 
     @property
-    def get_database_url(self):
+    def database_url(self):
         return (
             f"postgresql+asyncpg://{self._get(self.POSTGRES_USER)}:{self._get(self.POSTGRES_PASSWORD)}@"
             f"{self._get(self.POSTGRES_HOST)}:{self._get(self.POSTGRES_PORT)}/{self._get(self.POSTGRES_DATABASE)}"

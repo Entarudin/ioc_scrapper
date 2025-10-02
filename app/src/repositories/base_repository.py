@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, AsyncIterator, Any
+
 from app.src.constants import DEFAULT_PAGE, DEFAULT_SIZE
+from app.src.constants.pagination import DEFAULT_BATCH_SIZE
 
 from app.src.dtos.base_dto import BaseDto
 from app.src.entities.base_entity import BaseEntity
@@ -25,6 +27,17 @@ class BaseRepository(ABC):
     async def get_list(
         self, page: int = DEFAULT_PAGE, size: int = DEFAULT_SIZE
     ) -> tuple[List[BaseEntity], int]:
+        pass
+
+    @abstractmethod
+    async def get_batch_by_conditions(
+        self,
+        *conditions: Any,
+        batch_size: int = DEFAULT_BATCH_SIZE,
+        order_field: None = None,
+        order_by: None = None,
+        **filters
+    ) -> AsyncIterator[List[BaseEntity]]:
         pass
 
     @abstractmethod

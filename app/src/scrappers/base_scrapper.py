@@ -16,10 +16,9 @@ class BaseScrapper(ABC):
 
     async def scrape(self, keyword: str) -> dict[str, Any]:
         soup = await self.__get_soup_by_request(self._prepare_url(keyword))
-        return soup.__dict__
+        return {"text": soup.text}
 
     async def __get_soup_by_request(self, uri: str) -> BeautifulSoup:
         response = await self.adapter.get(uri)
-        await self.adapter.close()
         soup = BeautifulSoup(response.to_text(), "lxml")
         return soup

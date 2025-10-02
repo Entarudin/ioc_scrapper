@@ -1,1 +1,2 @@
 from .scrapper_types import ScrapperType
+from .scrapper_request_status import ScrapperRequestStatus

@@ -1,7 +1,8 @@
-from typing import List
+from typing import List, Any, AsyncIterator
 
 from sqlalchemy import select, func
 
+from app.src.constants.pagination import DEFAULT_BATCH_SIZE
 from app.src.dtos.base_dto import BaseDto
 from app.src.entities.base_entity import BaseEntity
 from app.src.exceptions.exception import (
@@ -33,6 +34,9 @@ class BasePgRepository(BaseRepository, ABC):
 
     def _map_model_to_entity(self, model: BaseModel) -> BaseEntity:
         return self._get_entity_type().model_validate(model)
+
+    def _map_models_to_entities(self, models: List[BaseModel]) -> List[BaseEntity]:
+        return [self._map_model_to_entity(m) for m in models]
 
     async def create(self, dto: BaseDto) -> BaseEntity:
         try:
@@ -79,9 +83,47 @@ class BasePgRepository(BaseRepository, ABC):
             stmt = select(self._get_model_type()).offset((page - 1) * size).limit(size)
             result = await session.execute(stmt)
             models = result.scalars().all()
-            items = [self._map_model_to_entity(m) for m in models]
+            items = self._map_models_to_entities(models)
             count = await self.count()
             return items, count
+
+    async def get_batch_by_conditions(
+        self,
+        *conditions: Any,
+        batch_size: int = DEFAULT_BATCH_SIZE,
+        order_field: None = None,
+        order_by: None = None,
+        **filters,
+    ) -> AsyncIterator[List[BaseEntity]]:
+        async with self.__adapter.get_session() as session:
+            if order_field is None:
+                order_field = self._get_model_type().id
+            last_value = None
+
+            while True:
+                stmt = (
+                    select(self._get_model_type())
+                    .filter(*conditions)
+                    .filter_by(**filters)
+                    .limit(batch_size)
+                )
+
+                if last_value is not None:
+                    stmt = stmt.filter(order_field > last_value)
+
+                stmt = stmt.order_by(order_field.asc())
+
+                if order_by:
+                    stmt = stmt.order_by(order_field.asc(), *order_by)
+
+                result = await session.execute(stmt)
+                batch = result.scalars().all()
+
+                if not batch:
+                    break
+
+                yield self._map_models_to_entities(batch)
+                last_value = getattr(batch[-1], order_field.key)
 
     async def update(self, id: int, dto: BaseDto) -> BaseEntity:
         async with self.__adapter.get_session() as session:
